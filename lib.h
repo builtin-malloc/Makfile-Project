@@ -3,9 +3,9 @@
 #ifdef DYNAMIC_LIB
 
 #ifdef BUILD_DLL
-#define EXPORT __declspec(dll_export)
+#define EXPORT __declspec(dllexport)
 #else
-#define EXPORT __declspec(dll_import)
+#define EXPORT __declspec(dllimport)
 #endif
 
 #else
