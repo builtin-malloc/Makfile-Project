@@ -27,7 +27,7 @@ jobs:
 
     env:
       LINKING: ${{ matrix.linking }}
-      COMPILER: $${{ matrix.compiler }}
+      COMPILER: ${{ matrix.compiler }}
       BUILD: release
       STRICT: strict
 
