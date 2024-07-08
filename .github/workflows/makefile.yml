@@ -21,9 +21,9 @@ jobs:
         linking:
         - dynamic
         - static
-	compiler:
-	- gcc
-	- clang
+        compiler:
+        - gcc
+        - clang
 
     env:
       LINKING: ${{ matrix.linking }}
