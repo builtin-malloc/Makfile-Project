@@ -18,6 +18,12 @@ jobs:
         - ubuntu-latest
         - windows-latest
         - macos-latest
+	linking:
+	- dynamic
+	- static
+
+    env:
+      LINKING: ${{ matrix.linking }}
 
     steps:
       - name: Checkout repository
