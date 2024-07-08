@@ -1,0 +1,14 @@
+*.o
+*.d
+*.a
+*.so
+*.lib
+*.dylib
+
+\#*\#
+.\#*
+*~
+
+.DS_Store
+
+bar
