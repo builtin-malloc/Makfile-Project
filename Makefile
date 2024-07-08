@@ -25,13 +25,14 @@ CC := clang
 AR := ar
 
 
-CFLAGS.dynamic.windows :=
-CFLAGS.dynamic.unix    := -fPIC
-LDFLAGS.dynamic.lib    := -shared
-LDFLAGS.bin            := -lfoo -L.
+CFLAGS.dynamic.windows		:=
+CFLAGS.dynamic.unix		:= -fPIC
+LDFLAGS.lib.dynamic.unix	:= -shared
+LDFLAGS.lib.dynamic.windows	:= -shared -Wl,--out-implib,foo.lib
+LDFLAGS.bin			:= -lfoo -L.
 
 $(BIN): LDFLAGS := $(LDFLAGS.bin)
-$(LIB): LDFLAGS := $(LDFLAGS.$(LINKING).lib)
+$(LIB): LDFLAGS := $(LDFLAGS.lib.$(LINKING).$(PLATFORM))
 CFLAGS  := -c $(CFLAGS.$(LINKING).$(PLATFORM))
 ARFLAGS := rcs
 
