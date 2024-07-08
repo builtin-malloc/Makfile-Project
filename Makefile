@@ -1,7 +1,17 @@
+ifeq ($(OS), Windows_NT)
+PLATFORM := windows
+else
+PLATFORM := linux
+endif
+
+
+LIB.windows := foo.lib
+LIB.linux   := libfoo.a
+
 BIN    := bar
 BINSRC := bin.c
 BINOBJ := bin.o
-LIB    := libfoo.a
+LIB    := $(LIB.$(PLATFORM))
 LIBSRC := lib.c
 LIBOBJ := lib.o
 
