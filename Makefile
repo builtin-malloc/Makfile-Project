@@ -25,6 +25,7 @@ BINDIR	:= bin
 LIBDIR	:= lib
 OBJDIR	:= obj
 TESTDIR := test
+VENVDIR := venv
 
 BINSRC  = $(wildcard $(BINDIR)/*.c)
 LIBSRC  = $(wildcard $(LIBDIR)/*.c)
@@ -55,18 +56,24 @@ include make/compiler.Makefile
 MKDIR_P ?= mkdir -p
 RM_RF   ?= rm -rf
 
+FORMATTER ?= $(VENVDIR)/bin/clang-format
+LINTER    ?= $(VENVDIR)/bin/clang-tidy
+COMPILEDB ?= $(VENVDIR)/bin/compiledb
+
 ################################################################################
 ## TARGETS #####################################################################
 ################################################################################
 
 
 .PHONY: all clean test
+.PHONY: format lint
 
 all: $(BINS) $(LIB)
 test: $(TESTS)
 
 include make/build.Makefile
 include make/clean.Makefile
+include make/development.Makefile
 
 -include $(BINDEP)
 -include $(LIBDEP)
