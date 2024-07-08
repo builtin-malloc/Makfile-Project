@@ -30,7 +30,7 @@ $(LIB): $(LIBOBJ)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(BIN): $(BINOBJ) | $(LIB)
-	$(LD) $(LDFLAGS) $@ $^
+	$(LD) $^ $(LDFLAGS) $@
 
 lib.o: lib.c
 	$(CC) $(CFLAGS) $@ $<
