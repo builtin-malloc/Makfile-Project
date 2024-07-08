@@ -66,3 +66,6 @@ jobs:
 
       - name: Run tests
         run: make check
+
+      - name: Install project
+        run: make install

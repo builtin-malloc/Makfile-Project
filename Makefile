@@ -15,7 +15,7 @@ STRICT		?= strict
 
 include make/platform.Makefile
 
-PREFIX		?= PREFIX.$(PLATFORM)
+PREFIX ?= $(PREFIX.$(PLATFORM))
 
 ################################################################################
 ## FILES AND FOLDERS ###########################################################
@@ -57,6 +57,7 @@ include make/compiler.Makefile
 
 MKDIR_P ?= mkdir -p
 RM_RF   ?= rm -rf
+CP      ?= cp
 
 FORMATTER ?= $(VENVDIR)/bin/clang-format
 LINTER    ?= $(VENVDIR)/bin/clang-tidy
@@ -67,7 +68,7 @@ COMPILEDB ?= $(VENVDIR)/bin/compiledb
 ################################################################################
 
 
-.PHONY: all clean test check
+.PHONY: all clean test check install
 .PHONY: format lint compiledb
 
 all: $(BINS) $(LIB)
@@ -78,6 +79,7 @@ check: $(TESTS)
 include make/build.Makefile
 include make/clean.Makefile
 include make/development.Makefile
+include make/install.Makefile
 
 -include $(BINDEP)
 -include $(LIBDEP)
