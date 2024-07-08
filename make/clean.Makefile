@@ -13,3 +13,5 @@ clean:
 
 mrproper:
 	$(RM_RF) $(OBJDIR)
+	$(RM_RF) $(VENVDIR)
+	$(RM_RF) $(COMPILE_COMMANDS)

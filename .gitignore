@@ -13,3 +13,5 @@
 
 obj/
 venv/
+
+compile_commands.json

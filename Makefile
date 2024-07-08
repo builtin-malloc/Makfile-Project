@@ -47,6 +47,8 @@ BINEXT  = $(BINEXT.$(PLATFORM))
 BINS    = $(BINSRC:$(BINDIR)/%.c=$(OBJDIR)/%$(BINEXT))
 TESTS   = $(TESTSRC:$(TESTDIR)/%.c=$(OBJDIR)/%$(BINEXT))
 
+COMPILE_COMMANDS = compile_commands.json
+
 ################################################################################
 ## PROGRAMS ####################################################################
 ################################################################################
@@ -66,7 +68,7 @@ COMPILEDB ?= $(VENVDIR)/bin/compiledb
 
 
 .PHONY: all clean test check
-.PHONY: format lint
+.PHONY: format lint compiledb
 
 all: $(BINS) $(LIB)
 test: $(TESTS)
