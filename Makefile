@@ -1,17 +1,21 @@
+LINKING ?= dynamic
+
 ifeq ($(OS), Windows_NT)
 PLATFORM := windows
 else
-PLATFORM := linux
+PLATFORM := unix
 endif
 
 
-LIB.windows := foo.lib
-LIB.linux   := libfoo.a
+LIB.static.windows  := foo.lib
+LIB.static.unix     := libfoo.a
+LIB.dynamic.windows := foo.dll
+LIB.dynamic.unix    := libfoo.so
 
 BIN    := bar
 BINSRC := bin.c
 BINOBJ := bin.o
-LIB    := $(LIB.$(PLATFORM))
+LIB    := $(LIB.$(LINKING).$(PLATFORM))
 LIBSRC := lib.c
 LIBOBJ := lib.o
 
@@ -20,8 +24,15 @@ LD := clang
 CC := clang
 AR := ar
 
-LDFLAGS := -lfoo -L. -o
-CFLAGS  := -c -o
+
+CFLAGS.dynamic.windows :=
+CFLAGS.dynamic.unix    := -fPIC
+LDFLAGS.dynamic.lib    := -shared
+LDFLAGS.bin            := -lfoo -L.
+
+$(BIN): LDFLAGS := $(LDFLAGS.bin)
+$(LIB): LDFLAGS := $(LDFLAGS.$(LINKING).lib)
+CFLAGS  := -c $(CFLAGS.$(LINKING).$(PLATFORM))
 ARFLAGS := rcs
 
 
@@ -37,14 +48,20 @@ clean:
 	$(RM_RF) $(BIN) $(BINOBJ)
 
 $(LIB): $(LIBOBJ)
-	$(AR) $(ARFLAGS) $@ $^
+ifeq ($(LINKING), static)
+	$(AR) $(ARFLAGS) -o $@ $^
+endif
+ifeq ($(LINKING), dynamic)
+	$(LD) $^ $(LDFLAGS) -o $@
+endif
+
 
 $(BIN): $(BINOBJ) | $(LIB)
-	$(LD) $^ $(LDFLAGS) $@
+	$(LD) $^ $(LDFLAGS) -o $@
 
 lib.o: lib.c
-	$(CC) $(CFLAGS) $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
 bin.o: bin.c
-	$(CC) $(CFLAGS) $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
