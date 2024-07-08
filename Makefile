@@ -1,4 +1,5 @@
 LINKING ?= dynamic
+COMPILER ?= clang
 
 ifeq ($(OS), Windows_NT)
 PLATFORM := windows
@@ -20,8 +21,13 @@ LIBSRC := lib.c
 LIBOBJ := lib.o
 
 
-LD := clang
-CC := clang
+LD.clang := clang
+CC.clang := clang
+LD.gcc := gcc
+CC.gcc := gcc
+
+LD := $(LD.$(COMPILER))
+CC := $(CC.$(COMPILER))
 AR := ar
 
 

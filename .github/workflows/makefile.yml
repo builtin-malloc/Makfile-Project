@@ -21,9 +21,13 @@ jobs:
         linking:
         - dynamic
         - static
+	compiler:
+	- gcc
+	- clang
 
     env:
       LINKING: ${{ matrix.linking }}
+      COMPILER: $${{ matrix.compiler }}
 
     steps:
       - name: Checkout repository
