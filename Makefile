@@ -1,78 +1,73 @@
-LINKING ?= dynamic
-COMPILER ?= clang
+################################################################################
+## SETUP #######################################################################
+################################################################################
 
-ifeq ($(OS), Windows_NT)
-PLATFORM := windows
-else
-PLATFORM := unix
-endif
+PROJECT		= footgun
+COMPONENT	= example
+VERSION		= $(shell git describe --tags --abbrev=0)
+FULLNAME	= $(PROJECT)-$(COMPONENT)-$(VERSION)
+C_NAMESPACE	= FG_
 
+BUILD		?= debug
+LINKING		?= dynamic
+COMPILER	?= clang
+STRICT		?= strict
 
-LIB.static.windows  := foo.lib
-LIB.static.unix     := libfoo.a
-LIB.dynamic.windows := foo.dll
-LIB.dynamic.unix    := libfoo.so
+include make/platform.Makefile
 
-BIN    := bar
-BINSRC := bin.c
-BINOBJ := bin.o
-LIB    := $(LIB.$(LINKING).$(PLATFORM))
-LIBSRC := lib.c
-LIBOBJ := lib.o
+PREFIX		?= PREFIX.$(PLATFORM)
 
+################################################################################
+## FILES AND FOLDERS ###########################################################
+################################################################################
 
-LD.clang := clang
-CC.clang := clang
-LD.gcc := gcc
-CC.gcc := gcc
+BINDIR	:= bin
+LIBDIR	:= lib
+OBJDIR	:= obj
+TESTDIR := test
 
-LD := $(LD.$(COMPILER))
-CC := $(CC.$(COMPILER))
-AR := ar
+BINSRC  = $(wildcard $(BINDIR)/*.c)
+LIBSRC  = $(wildcard $(LIBDIR)/*.c)
+LIBHDR  = $(wildcard $(LIBDIR)/*.h)
+TESTSRC = $(wildcard $(TESTDIR)/*.c)
 
+BINOBJ  = $(BINSRC:$(BINDIR)/%.c=$(OBJDIR)/%.o)
+LIBOBJ  = $(LIBSRC:$(LIBDIR)/%.c=$(OBJDIR)/%.o)
+TESTOBJ = $(TESTSRC:$(TESTDIR)/%.c=$(OBJDIR)/%.o)
 
-CFLAGS.bin.dynamic.windows      := -DDYNAMIC_LIB
-CFLAGS.lib.dynamic.windows	:= -DDYNAMIC_LIB -DBUILD_DLL
-CFLAGS.lib.dynamic.unix		:= -fPIC
-LDFLAGS.lib.dynamic.unix	:= -shared
-LDFLAGS.lib.dynamic.windows	:= -shared
-LDFLAGS.bin			:= -lfoo -L.
+BINDEP  = $(BINOBJ:%.o=%.d)
+LIBDEP  = $(LIBOBJ:%.o=%.d)
+TESTDEP = $(TESTOBJ:%.o=%.d)
 
-$(BIN): LDFLAGS := $(LDFLAGS.bin)
-$(LIB): LDFLAGS := $(LDFLAGS.lib.$(LINKING).$(PLATFORM))
+LIBNAME = $(LIBNAME.$(PLATFORM))
+LIBEXT  = $(LIBEXT.$(LINKING).$(PLATFORM))
+LIB	= $(OBJDIR)/$(LIBNAME)$(LIBEXT)
+BINEXT  = $(BINEXT.$(PLATFORM))
+BINS    = $(BINSRC:$(BINDIR)/%.c=$(OBJDIR)/%$(BINEXT))
+TESTS   = $(TESTSRC:$(TESTDIR)/%.c=$(OBJDIR)/%$(BINEXT))
 
-$(BIN): CFLAGS  := -c $(CFLAGS.bin.$(LINKING).$(PLATFORM))
-$(LIB): CFLAGS  := -c $(CFLAGS.lib.$(LINKING).$(PLATFORM))
+################################################################################
+## PROGRAMS ####################################################################
+################################################################################
 
-ARFLAGS := rcs
+include make/compiler.Makefile
 
+MKDIR_P ?= mkdir -p
+RM_RF   ?= rm -rf
 
-RM_RF := rm -rf
-
-
-.PHONY: all clean
-
-all: $(BIN) $(LIB)
-
-clean:
-	$(RM_RF) $(LIB) $(LIBOBJ)
-	$(RM_RF) $(BIN) $(BINOBJ)
-
-$(LIB): $(LIBOBJ)
-ifeq ($(LINKING), static)
-	$(AR) $(ARFLAGS) $@ $^
-endif
-ifeq ($(LINKING), dynamic)
-	$(LD) $^ $(LDFLAGS) -o $@
-endif
+################################################################################
+## TARGETS #####################################################################
+################################################################################
 
 
-$(BIN): $(BINOBJ) | $(LIB)
-	$(LD) $^ $(LDFLAGS) -o $@
+.PHONY: all clean test
 
-lib.o: lib.c
-	$(CC) $(CFLAGS) -o $@ $<
+all: $(BINS) $(LIB)
+test: $(TESTS)
 
-bin.o: bin.c
-	$(CC) $(CFLAGS) -o $@ $<
+include make/build.Makefile
+include make/clean.Makefile
 
+-include $(BINDEP)
+-include $(LIBDEP)
+-include $(TESTDEP)
