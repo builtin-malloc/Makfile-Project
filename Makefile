@@ -65,11 +65,13 @@ COMPILEDB ?= $(VENVDIR)/bin/compiledb
 ################################################################################
 
 
-.PHONY: all clean test
+.PHONY: all clean test check
 .PHONY: format lint
 
 all: $(BINS) $(LIB)
 test: $(TESTS)
+check: $(TESTS)
+	@for test in $^; do $${test}; done
 
 include make/build.Makefile
 include make/clean.Makefile
