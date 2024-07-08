@@ -8,8 +8,15 @@ on:
     branches:
       - main
 
+stages:
+  - lint
+  - build
+
 jobs:
   check:
+    stage: lint
+    when: always
+    
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +31,11 @@ jobs:
     
 
   build:
+    stage: build
+    when: on_success
+    
     runs-on: ${{ matrix.os }}
+    
     strategy:
       fail-fast: false
       matrix:
