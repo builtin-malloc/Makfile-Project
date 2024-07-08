@@ -18,10 +18,10 @@ jobs:
         - ubuntu-latest
         - windows-latest
         - macos-latest
-	linking:
-	- dynamic
-	- static
-
+        linking:
+        - dynamic
+        - static
+	
     env:
       LINKING: ${{ matrix.linking }}
 
