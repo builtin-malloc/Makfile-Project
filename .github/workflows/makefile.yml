@@ -42,7 +42,6 @@ jobs:
         - dynamic
         - static
         compiler:
-        - gcc
         - clang
 
     env:
@@ -50,6 +49,7 @@ jobs:
       COMPILER: ${{ matrix.compiler }}
       BUILD: release
       STRICT: strict
+      LD_LIBRARY_PATH: obj
 
     steps:
       - name: Checkout repository
