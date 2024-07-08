@@ -49,7 +49,7 @@ clean:
 
 $(LIB): $(LIBOBJ)
 ifeq ($(LINKING), static)
-	$(AR) $(ARFLAGS) -o $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 endif
 ifeq ($(LINKING), dynamic)
 	$(LD) $^ $(LDFLAGS) -o $@
