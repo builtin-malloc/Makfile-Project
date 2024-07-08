@@ -26,7 +26,8 @@ jobs:
     
 
   build:
-    if: ${{ check.result == 'success' }}
+    if: ${{ needs.check.result == 'success' }}
+    needs: [ check ]
     
     runs-on: ${{ matrix.os }}
     
